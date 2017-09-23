@@ -11,33 +11,46 @@
     crossorigin="anonymous">
   <link rel="stylesheet" href="./public/style.css">
   <script src="./public/vue.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
   <div id="app">
     <div class="header">
       <div class="container">
-        <h1>JavaScript编程入门</h1>
-        <h2 style="font-size: 25px;">shasha的小基地，我会每天来施工~</h2>
+        <h1 style="color:white">JavaScript编程入门</h1>
+        <h2 style="font-size: 25px;color:white">shasha的小基地，我会每天来施工~</h2>
       </div>
     </div>
-    <div class="container">
+    <div class="col-md-8">
+        <div class="container">
         <div class="panel-body">
           <div class="btn btn-primary" v-on:click="sendData">有话对老师说</div>
         </div>
-    <div class="col-md-8">
+        <div>
+            <form>
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">您的姓名</span>
+                <input v-model="nameS" type="name" class="form-control" id="name" placeholder="请输入您在新生大学的名称" aria-describedby="basic-addon1">
+      
+              </div>
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">您的账号</span>
+                <input v-model="accountS" type="account" class="form-control" id="account" placeholder="请输入您在新生大学的账号" aria-describedby="basic-addon1">
+              </div>
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">对老师说</span>
+                <input v-model="contentS" type="content" class="form-control" id="content" placeholder="请输入您想说的话" aria-describedby="basic-addon1">
+              </div>
+              <div class="btn btn-primary" v-on:click="sendData">提交发送</div>
+            </form>
+          </div>
+        
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">编程学习初心</h3>
           </div>
-          <div class="panel-body">
-            <div class="words-pannel" v-for="item in wordsList">
-              <div class="media">
-                <div class="media-left">
-                  <a href="#">
-                      <img class="media-object avatar" v-bind:src="item.avatar" alt="...">
-                    </a>
-                </div>
+          
           <div class="panel-body">
             <div class="words-pannel" v-for="item in wordsList">
               <div class="media">
@@ -54,6 +67,7 @@
                 </div>
               </div>
             </div>
+            
           </div>
       </div>
     </div>
@@ -73,7 +87,10 @@
   var app = new Vue({
     el: '#app',   // #app 和html中div#id的 app 对应
     data: {
-      wordsList: []  // 变量wordsList可以在html使用
+      wordsList: [] , // 变量wordsList可以在html使用
+      nameS: '',    // 变量nameS默认空白，同步更新用户填入的“用户姓名”
+      accountS: '', // 变量accountS默认空白，同步更新用户填入的”新大账号“
+      contentS: ''  // 变量contentSt默认空白，同步更新用户填入的“想说的话”
     },
     methods: {
       fetchData: function() {
@@ -85,18 +102,18 @@
             console.log(error);
           });
       },
-      sendData: function() {
-        axios.post('file:///C:/Users/Administrator/Desktop/Git/shasha_work/my-webpage/index.html',{
-            name : "wangshasha",
-            account : "15951883863",
-            content : "我着陆了没？？"
-          })
+      sendData: function () {  
+        axios.post('https://js.xinshengdaxue.com/api/v1/learnJS/sayToMe', {
+          name: app.nameS, // 拿到表单的name
+          account: app.accountS, // 拿到表单的account
+          content: app.contentS  // 拿到表单的content
+        })
           .then(function (response) {
-            app.wordsList = response.data.words;
+            alert(response.data.code);  // 浏览器弹窗 post 结果，根据 api，如果弹窗1，表示处理正常，如果是0，表示处理有错误
           })
           .catch(function (error) {
-            console.log(error);
-          });          
+            console.log(error); // 函数执行过程中，如果出错，就会直接跳到这里，浏览器conosle打印错误日志
+          });
       }
     }
   });
